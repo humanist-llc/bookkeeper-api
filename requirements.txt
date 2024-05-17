@@ -1,0 +1,3 @@
+modal
+magentic>=0.24.0
+fastapi>=0.111.0
