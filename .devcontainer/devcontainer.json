@@ -1,0 +1,28 @@
+{
+    "image": "mcr.microsoft.com/devcontainers/python:3.12",
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "latest"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "charliermarsh.ruff"
+            ],
+            "settings": {
+                "editor.formatOnSave": true,
+                "python.experiments.enabled": false,
+                "python.analysis.typeCheckingMode": "basic",
+                "python.defaultInterpreterPath": "./.venv/bin/python"
+            }
+        }
+    },
+    "runArgs": [
+        "--env-file",
+        "${localWorkspaceFolder}/.env"
+    ],
+    "postCreateCommand": "bash scripts/install-dependencies.sh"
+}
