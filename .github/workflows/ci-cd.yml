@@ -1,15 +1,19 @@
 name: CI/CD
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   changes:
     runs-on: ubuntu-latest
-    # Set job outputs to values from filter step
     outputs:
       development: ${{ steps.filter.outputs.development }}
     steps:
-    # For pull requests it's not necessary to checkout the code
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
     - uses: dorny/paths-filter@v3
       id: filter
       with:
