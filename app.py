@@ -1,14 +1,14 @@
 from enum import Enum
 from modal import web_endpoint, App, Secret, Image
 
-from typing import Optional, Union
+from typing import Optional, Union, Dict
 
 from pydantic import BaseModel, Field
 from magentic import chatprompt, OpenaiChatModel, SystemMessage
 from magentic.vision import UserImageMessage
 
 app = App("bookkeeper-api")
-magentic_image = Image.debian_slim().pip_install(
+magentic_image = Image.debian_slim(python_version="3.12").pip_install(
     "magentic>=0.24.0", "fastapi>=0.111.0", "requests"
 )
 
@@ -41,7 +41,7 @@ class ReceiptDetails(BaseModel):
         description="The date the transaction was conducted.",
         examples=["2022-01-01", "Not detected"],
     )
-    goods: str = Field(
+    goods: Union[Dict[str, float], str] = Field(
         description="Identify the products purchased in the transaction, include the amount as well as their costs. Be concise.",
         examples=[{"1x Dorito": 1.99}],
         default={},
