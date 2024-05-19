@@ -41,9 +41,9 @@ class ReceiptDetails(BaseModel):
         description="The date the transaction was conducted.",
         examples=["2022-01-01", "Not detected"],
     )
-    goods: Union[dict, str] = Field(
+    goods: str = Field(
         description="Identify the products purchased in the transaction, include the amount as well as their costs. Be concise.",
-        examples=[{"1x Dorito": 1.99}, "Not detected"],
+        examples=[{"1x Dorito": 1.99}],
         default={},
     )
     total: Union[float, str] = Field(
