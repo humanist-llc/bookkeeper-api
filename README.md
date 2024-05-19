@@ -9,3 +9,5 @@ TOKEN_ID=ak-*****
 TOKEN_SECRET=as-*****
 ```
 Open the project in VSCode using Dev Containers.
+
+To test your code, open a new terminal in VSCode and type `modal serve app.py`
