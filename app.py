@@ -36,10 +36,15 @@ class Category(Enum):
 
 
 class ReceiptDetails(BaseModel):
-    vendor: str = Field(description="The name of the vendor.", examples=["Walmart"])
+    vendor: str = Field(
+        description="The name of the vendor.",
+        examples=["Walmart"],
+        default="Not detected",
+    )
     transaction_date: str = Field(
         description="The date the transaction was conducted.",
-        examples=["2022-01-01", "Not detected"],
+        examples=["2022-01-01"],
+        default="Not detected",
     )
     goods: Union[Dict[str, float], str] = Field(
         description="Identify the products purchased in the transaction, include the amount as well as their costs. Be concise.",
