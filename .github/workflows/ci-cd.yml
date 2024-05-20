@@ -6,25 +6,9 @@ on:
       - main
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      development: ${{ steps.filter.outputs.development }}
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-
-    - uses: dorny/paths-filter@v3
-      id: filter
-      with:
-        filters: |
-          development:
-            - '*.{py}'
   deploy:
     name: Deploy to Development Environment
     runs-on: ubuntu-latest
-    needs: changes
-    if: ${{ needs.changes.outputs.development == 'true' }}
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}

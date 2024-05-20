@@ -51,13 +51,15 @@ class ReceiptDetails(BaseModel):
         examples=[{"1x Dorito": 1.99}],
         default={},
     )
-    total: Union[float, str] = Field(
-        description="The total amount paid in the transaction.",
-        examples=[1.99, "Not detected"],
+    total: float = Field(
+        description="The total amount paid in the transaction. Output 0.00 when not detected.",
+        examples=[1.99],
+        default=[0.00],
     )
     category: Category = Field(
         description="Classify this transactions nature.",
-        examples=["Groceries", "Not detected"],
+        examples=[Category.GROCERIES],
+        default=Category.MISCELLANEOUS,
     )
 
 
