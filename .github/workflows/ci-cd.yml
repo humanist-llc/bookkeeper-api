@@ -19,7 +19,7 @@ jobs:
       with:
         filters: |
           development:
-            - '**/*.{py}'
+            - '*.{py}'
   deploy:
     name: Deploy to Development Environment
     runs-on: ubuntu-latest
