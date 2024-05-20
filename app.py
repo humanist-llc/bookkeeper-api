@@ -70,12 +70,15 @@ class Response(BaseModel):
 
 @app.function(image=magentic_image, secrets=[Secret.from_name("openai")])
 @web_endpoint(method="POST")
-def extractReceipt(image: bytes) -> Response:
+def extractReceipt(image: Dict) -> Response:
+    if "image" not in image:
+        return Response(receipt=None, error="No image provided.")
+
     @chatprompt(
         SystemMessage(
             "You are a receipt scanner, do not make up any information. Scan the receipt and provide the details."
         ),
-        UserImageMessage(image),
+        UserImageMessage(image["image"]),
         model=OpenaiChatModel("gpt-4o", temperature=1),
     )
     def describe_image() -> ReceiptDetails: ...
