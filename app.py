@@ -7,8 +7,6 @@ from pydantic import BaseModel, Field
 from magentic import chatprompt, OpenaiChatModel, SystemMessage
 from magentic.vision import UserImageMessage
 
-from fastapi import Form
-
 app = App("bookkeeper-api")
 magentic_image = Image.debian_slim(python_version="3.12").pip_install(
     "magentic>=0.24.0", "fastapi>=0.111.0", "requests"
@@ -72,20 +70,18 @@ class Response(BaseModel):
 
 @app.function(image=magentic_image, secrets=[Secret.from_name("openai")])
 @web_endpoint(method="POST")
-def extractReceipt(image: str = Form(...)) -> Response:
-    if "image" not in image:
-        return Response(receipt=None, error="No image provided.")
+def extractReceipt(image: Dict) -> Response:
+    import base64
 
-    # data = image["image"].encode()
+    data = base64.decodebytes(str.encode(image["image"]))
 
-    # @chatprompt(
-    #     SystemMessage(
-    #         "You are a receipt scanner, do not make up any information. Scan the receipt and provide the details."
-    #     ),
-    #     UserImageMessage(data),
-    #     model=OpenaiChatModel("gpt-4o", temperature=1),
-    # )
-    # def describe_image() -> ReceiptDetails: ...
+    @chatprompt(
+        SystemMessage(
+            "You are a receipt scanner, do not make up any information. Scan the receipt and provide the details."
+        ),
+        UserImageMessage(data),
+        model=OpenaiChatModel("gpt-4o", temperature=1),
+    )
+    def describe_image() -> ReceiptDetails: ...
 
-    # return Response(receipt=describe_image(), error=None)
-    return Response(receipt=None, error="Test")
+    return Response(receipt=describe_image(), error=None)
