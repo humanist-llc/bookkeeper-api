@@ -63,6 +63,21 @@ class Response(BaseModel):
 
 @app.function(image=magentic_image, secrets=[Secret.from_name("openai")])
 @web_endpoint(method="POST")
+def extractReceiptData(image: bytes) -> Response:
+    @chatprompt(
+        SystemMessage(
+            "You are a receipt scanner, do not make up any information. Scan the receipt and provide the details."
+        ),
+        UserImageMessage(image),
+        model=OpenaiChatModel("gpt-4o", temperature=1),
+    )
+    def describe_image() -> ReceiptDetails: ...
+
+    return Response(receipt=describe_image(), error=None)
+
+
+@app.function(image=magentic_image, secrets=[Secret.from_name("openai")])
+@web_endpoint(method="POST")
 def extractReceipt(image: str) -> Response:
     import requests
 
