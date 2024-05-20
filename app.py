@@ -70,7 +70,7 @@ class Response(BaseModel):
 
 @app.function(image=magentic_image, secrets=[Secret.from_name("openai")])
 @web_endpoint(method="POST")
-def extractReceiptData(image: bytes) -> Response:
+def extractReceipt(image: bytes) -> Response:
     @chatprompt(
         SystemMessage(
             "You are a receipt scanner, do not make up any information. Scan the receipt and provide the details."
@@ -81,33 +81,3 @@ def extractReceiptData(image: bytes) -> Response:
     def describe_image() -> ReceiptDetails: ...
 
     return Response(receipt=describe_image(), error=None)
-
-
-@app.function(image=magentic_image, secrets=[Secret.from_name("openai")])
-@web_endpoint(method="POST")
-def extractReceipt(image: str) -> Response:
-    import requests
-
-    def is_url_image(image_url):
-        image_formats = ("image/png", "image/jpeg", "image/jpg", "image/gif")
-        r = requests.head(image_url)
-        if r.headers["content-type"] in image_formats:
-            return True
-        return False
-
-    if is_url_image(image):
-
-        @chatprompt(
-            SystemMessage(
-                "You are a receipt scanner, do not make up any information. Scan the receipt and provide the details."
-            ),
-            UserImageMessage(image),
-            model=OpenaiChatModel("gpt-4o", temperature=1),
-        )
-        def describe_image() -> ReceiptDetails: ...
-
-        return Response(receipt=describe_image(), error=None)
-    else:
-        return Response(
-            receipt=None, error="Invalid or unsupported image URL provided."
-        )
