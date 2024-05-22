@@ -4,7 +4,7 @@ from modal import web_endpoint, App, Secret, Image
 from typing import Optional, Union, Dict
 
 from pydantic import BaseModel, Field
-from magentic import chatprompt, OpenaiChatModel, SystemMessage
+from magentic import chatprompt, OpenaiChatModel, SystemMessage, Placeholder
 from magentic.vision import UserImageMessage
 
 app = App("bookkeeper-api")
@@ -73,15 +73,15 @@ class Response(BaseModel):
 def extractReceipt(image: Dict) -> Response:
     import base64
 
-    data = base64.decodebytes(str.encode(image["image"]))
+    imageData = base64.decodebytes(str.encode(image["image"]))
 
     @chatprompt(
         SystemMessage(
             "You are a receipt scanner, do not make up any information. Scan the receipt and provide the details."
         ),
-        UserImageMessage(data),
-        model=OpenaiChatModel("gpt-4o", temperature=1),
+        UserImageMessage(Placeholder(bytes, "data")),
+        model=OpenaiChatModel(model="gpt-4o", temperature=1, max_tokens=4096),
     )
-    def describe_image() -> ReceiptDetails: ...
+    def describe_image(data: bytes) -> ReceiptDetails: ...
 
-    return Response(receipt=describe_image(), error=None)
+    return Response(receipt=describe_image(imageData), error=None)
